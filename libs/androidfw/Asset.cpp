@@ -821,6 +821,7 @@ off64_t _CompressedAsset::seek(off64_t offset, int whence)
  */
 void _CompressedAsset::close(void)
 {
+    AutoMutex _l(mCompressedAssetLock);
     if (mMap != NULL) {
         mMap->release();
         mMap = NULL;
@@ -846,9 +847,7 @@ void _CompressedAsset::close(void)
  */
 const void* _CompressedAsset::getBuffer(bool)
 {
-    if (mBuf != NULL)
-        return mBuf;
-    AutoMutex _l(sLock);
+    AutoMutex _l(mCompressedAssetLock);
     unsigned char* buf = NULL;
 
     if (mBuf != NULL)
